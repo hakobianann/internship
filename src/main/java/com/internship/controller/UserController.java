@@ -10,26 +10,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("users")
+//@RequestMapping("users")
 public class UserController {
     private final UserService userService;
-    private final UserService userService1;
 
 
     @Autowired
-    public UserController(UserService userService,
-                          UserService userService1) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userService1 = userService1;
         this.userService.initUser();
     }
 
-    @GetMapping()
+    @GetMapping("/users")
     public List<UserDto> getUsers(@RequestParam(value = "name", required = false) String name) {
         return userService.getUserData(name);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/users/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable() Long id) {
         UserDto user = userService.getUser(id);
         if (user == null) {
