@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-//@RequestMapping("users")
+@RequestMapping("users")
 public class UserController {
     private final UserService userService;
 
@@ -21,12 +21,12 @@ public class UserController {
         this.userService.initUser();
     }
 
-    @GetMapping("/users")
+    @GetMapping()
     public List<UserDto> getUsers(@RequestParam(value = "name", required = false) String name) {
         return userService.getUserData(name);
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable() Long id) {
         UserDto user = userService.getUser(id);
         if (user == null) {
@@ -35,7 +35,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/users")
+    @PostMapping()
     public ResponseEntity<UserDto> addUser(@RequestBody UserDto dto) throws Exception {
         if (dto.getName() == null) {
             throw new Exception("Name not found");
@@ -44,7 +44,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable("id") Long id,
                                               @RequestBody UserDto dto) {
         UserDto user = userService.updateUserData(id, dto);
@@ -54,7 +54,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public void addUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
     }

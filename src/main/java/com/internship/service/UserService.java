@@ -1,10 +1,12 @@
 package com.internship.service;
 
+import com.internship.persistence.entity.UserEntity;
+import com.internship.persistence.repository.UserRepository;
 import com.internship.service.dto.UserDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,26 +14,31 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    List<UserDto> users = new ArrayList<>();
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public UserDto updateUserData(Long id, UserDto dto) {
-        Optional<UserDto> user = users.stream().filter(userDto -> userDto.getId().equals(id)).findAny();
-        if (user.isPresent()) {
-            UserDto userDto = user.get();
-            userDto.setName(dto.getName());
-            return userDto;
+        List<UserEntity> users = userRepository.findAll();
+        Optional<UserEntity> userOptional = users.stream().filter(userEntity -> userEntity.getId().equals(id)).findAny();
+        if (userOptional.isPresent()) {
+            UserEntity user = userOptional.get();
+
+            return null;
         } else {
             return null;
         }
     }
 
     public void deleteUser(Long id) {
-        users.removeIf(userDto -> userDto.getId().equals(id));
+        userRepository.deleteById(id);
     }
 
     public UserDto createUser(UserDto dto) {
         UserDto user = new UserDto();
-        user.setId((long) users.size() + 1);
         user.setName(dto.getName());
         users.add(user);
 
@@ -50,12 +57,5 @@ public class UserService {
             return users.stream().filter(user -> user.getName().equalsIgnoreCase(name)).collect(Collectors.toList());
         }
         return users;
-    }
-
-    public void initUser() {
-        users.add(new UserDto(1L, "Robin Scherbatksy"));
-        users.add((new UserDto(2L, "Barney Stinson")));
-        users.add((new UserDto(3L, "Ted Mosby")));
-        users.add(new UserDto(4L, "Michael Scott"));
     }
 }
