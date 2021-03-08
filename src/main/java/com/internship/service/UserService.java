@@ -2,13 +2,15 @@ package com.internship.service;
 
 import com.internship.persistence.entity.UserEntity;
 import com.internship.persistence.repository.UserRepository;
+import com.internship.service.criteria.SearchCriteria;
 import com.internship.service.dto.UserDto;
+import com.internship.service.model.QueryResponseWrapper;
+import com.internship.service.model.UserWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,16 +23,20 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserDto updateUserData(Long id, UserDto dto) {
-        List<UserEntity> users = userRepository.findAll();
-        Optional<UserEntity> userOptional = users.stream().filter(userEntity -> userEntity.getId().equals(id)).findAny();
-        if (userOptional.isPresent()) {
-            UserEntity user = userOptional.get();
-
-            return null;
-        } else {
-            return null;
+    public UserDto updateUserData(Long id, UserDto dto) throws Exception {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new Exception("user not found"));
+        if (dto.getFirstName() != null) {
+            user.setFirstName(dto.getFirstName());
         }
+        if (dto.getLastName() != null) {
+            user.setLastName(dto.getLastName());
+        }
+        if (dto.getStatus() != null) {
+            user.setStatus(dto.getStatus());
+        }
+        user = userRepository.save(user);
+        return UserDto.mapEntityToDo(user);
     }
 
     public void deleteUser(Long id) {
@@ -38,24 +44,32 @@ public class UserService {
     }
 
     public UserDto createUser(UserDto dto) {
-        UserDto user = new UserDto();
-        user.setName(dto.getName());
-        users.add(user);
+        UserEntity user = new UserEntity();
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setStatus("ACTIVE");
+        //TODO Change this part after oAuth session and use Bcrypt
+        user.setPassHash("123456");
 
-        return user;
+        user = userRepository.save(user);
+        return UserDto.mapEntityToDo(user);
     }
 
-    public UserDto getUser(Long id) {
-        List<UserDto> users = getUserData(null);
-        Optional<UserDto> user = users.stream().filter(userDto -> userDto.getId().equals(id)).findAny();
-        return user.orElse(null);
-
+    public UserDto getUser(Long id) throws Exception {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new Exception("user not found"));
+        return UserDto.mapEntityToDo(user);
     }
 
-    public List<UserDto> getUserData(String name) {
-        if (!StringUtils.isEmpty(name)) {
-            return users.stream().filter(user -> user.getName().equalsIgnoreCase(name)).collect(Collectors.toList());
-        }
-        return users;
+    public List<UserDto> getUsers(String status) {
+        List<UserEntity> users = userRepository.findAllUsers(status);
+
+        return users.stream().map(UserDto::mapEntityToDo).collect(Collectors.toList());
+    }
+
+    public QueryResponseWrapper<UserWrapper> getUsers(SearchCriteria criteria) {
+        Page<UserWrapper> content = userRepository.findAllWithPagination(criteria.composePageRequest());
+
+        return new QueryResponseWrapper<>(content.getTotalElements(), content.getContent());
     }
 }
