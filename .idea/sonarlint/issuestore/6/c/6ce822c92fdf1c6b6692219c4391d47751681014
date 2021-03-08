@@ -1,0 +1,11 @@
+
+[
+java:S3516"9Refactor this method to not always return the same value.(Ϊ»Ϋ›όÿÿÿÿ8αέτ€/
+L
+java:S1172"*Remove this unused method parameter "dto".(Ϊ»Ϋ›όÿÿÿÿ8αέτ€/
+Z
+java:S1854"8Remove this useless assignment to local variable "user".(ύά―Υώÿÿÿÿ8αέτ€/
+Q
+java:S18748"/Remove this use of "isEmpty"; it is deprecated.(›Λ»όÿÿÿÿ8αέτ€/
+K
+java:S1481")Remove this unused "user" local variable.(ύά―Υώÿÿÿÿ8αέτ€/
