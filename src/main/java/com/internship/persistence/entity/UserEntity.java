@@ -17,6 +17,9 @@ public class UserEntity {
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
+    @Column(name = "username", nullable = false)
+    private String username;
+
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
@@ -72,5 +75,13 @@ public class UserEntity {
 
     public void setListOfUserCommunities(List<UserCommunityEntity> listOfUserCommunities) {
         this.listOfUserCommunities = listOfUserCommunities;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("users")
 public class UserController {
 
     private final UserService userService;
@@ -38,7 +38,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(id));
     }
 
-    @PostMapping()
+    @PostMapping("/registration")
     public ResponseEntity<UserDto> addUser(@RequestBody UserDto dto) throws Exception {
         if (dto.getFirstName() == null) {
             throw new Exception("First name is required");
@@ -46,6 +46,15 @@ public class UserController {
         if (dto.getLastName() == null) {
             throw new Exception("Last name is required");
         }
+
+        if (dto.getUsername() == null) {
+            throw new Exception("Username is required");
+        }
+
+        if (dto.getPassword() == null) {
+            throw new Exception("Password is required");
+        }
+
         UserDto user = userService.createUser(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }

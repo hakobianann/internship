@@ -10,6 +10,8 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private String status;
+    private String username;
+    private String password;
 
     public UserDto() {
     }
@@ -54,6 +56,14 @@ public class UserDto {
         this.status = status;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public static UserDto mapEntityToDo(UserEntity entity) {
         if (entity == null) {
             return null;
@@ -64,5 +74,13 @@ public class UserDto {
         dto.setLastName(entity.getLastName());
 
         return dto;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

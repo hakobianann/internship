@@ -8,6 +8,7 @@ import com.internship.service.model.QueryResponseWrapper;
 import com.internship.service.model.UserWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,10 +18,13 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder bcryptEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder bcryptEncoder) {
         this.userRepository = userRepository;
+        this.bcryptEncoder = bcryptEncoder;
     }
 
     public UserDto updateUserData(Long id, UserDto dto) throws Exception {
@@ -48,8 +52,8 @@ public class UserService {
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setStatus("ACTIVE");
-        //TODO Change this part after oAuth session and use Bcrypt
-        user.setPassHash("123456");
+        user.setPassHash(bcryptEncoder.encode(dto.getPassword()));
+        user.setUsername(dto.getUsername());
 
         user = userRepository.save(user);
         return UserDto.mapEntityToDo(user);
