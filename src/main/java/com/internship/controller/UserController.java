@@ -1,5 +1,6 @@
 package com.internship.controller;
 
+import com.internship.security.config.session.SessionUser;
 import com.internship.service.UserService;
 import com.internship.service.criteria.SearchCriteria;
 import com.internship.service.dto.UserDto;
@@ -12,8 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.internship.security.config.session.SessionUser.SESSION_USER_KEY;
+
 @RestController
 @RequestMapping("users")
+@SessionAttributes(SESSION_USER_KEY)
 public class UserController {
 
     private final UserService userService;
@@ -72,5 +76,12 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void addUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
+    }
+
+    // This is just an example of how to get user session user data
+    // You can use '@ModelAttribute(SESSION_USER_KEY) SessionUser sessionUser' part in any api call where its needed
+    @GetMapping("/session")
+    public ResponseEntity<SessionUser> getSessionUser(@ModelAttribute(SESSION_USER_KEY) SessionUser sessionUser) {
+        return ResponseEntity.ok(sessionUser);
     }
 }
