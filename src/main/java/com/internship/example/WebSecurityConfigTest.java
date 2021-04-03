@@ -1,4 +1,4 @@
-package com.internship.exampleforconfig;
+package com.internship.example;
 
 //@Configuration
 //@EnableWebSecurity // (1)
